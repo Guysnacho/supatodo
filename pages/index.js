@@ -11,6 +11,7 @@ import Head from "next/head";
 const Home = () => {
   const initialRef = useRef();
   const [todos, setTodos] = useState([]);
+  const [todo, setTodo] = useState(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
@@ -43,7 +44,17 @@ const Home = () => {
       .on("*", (payload) => {
         const newTodo = payload.new;
         setTodos((oldTodos) => {
-          const newTodos = [...oldTodos, newTodo];
+          const exists = oldTodos.find((todo) => todo.id === newTodo.id);
+          let newTodos;
+          if (exists) {
+            const oldTodoIndex = oldTodos.findIndex(
+              (obj) => obj.id === newTodo.id
+            );
+            oldTodos[oldTodoIndex] = newTodo;
+            newTodos = oldTodos;
+          } else {
+            newTodos = [...oldTodos, newTodo];
+          }
           newTodos.sort((a, b) => b.id - a.id);
           return newTodos;
         });
@@ -54,6 +65,11 @@ const Home = () => {
       todoListener.unsubscribe();
     };
   }, []);
+
+  const openHandler = (clickedTodo) => {
+    setTodo(clickedTodo);
+    onOpen();
+  };
 
   return (
     <div>
@@ -67,7 +83,12 @@ const Home = () => {
       </Head>
       <main>
         <Navbar onOpen={onOpen} />
-        <ManageTodo isOpen={isOpen} onClose={onClose} initialRef={initialRef} />
+        <ManageTodo
+          isOpen={isOpen}
+          onClose={onClose}
+          initialRef={initialRef}
+          todo={todo}
+          setTodo={setTodo} />
 
         <HStack m="10" spacing="4" justify="center">
           <Box>
@@ -84,7 +105,7 @@ const Home = () => {
           m="10"
         >
           {todos.map((todo) => (
-            <SingleTodo todo={todo} key={todo.id} />
+            <SingleTodo todo={todo} openHandler={openHandler} key={todo.id} />
           ))}
         </SimpleGrid>
       </main>

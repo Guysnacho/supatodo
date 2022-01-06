@@ -1,7 +1,6 @@
 import { Box, Divider, Heading, Text, Tag } from "@chakra-ui/react";
-import Head from "next/head";
 
-const SingleTodo = ({ todo }) => {
+const SingleTodo = ({ todo, openHandler }) => {
     const getDateInMonthDayYear = (date) => {
         const d = new Date(date);
         const options = {
@@ -25,8 +24,9 @@ const SingleTodo = ({ todo }) => {
             borderRadius="lg"
             overflow="hidden"
             p="4"
+            onClick={() => openHandler(todo)}
         >
-            <Heading side="md" mt="3">{todo.title}</Heading>
+            <Heading size="md" mt="3">{todo.title}</Heading>
             <Tag
                 position="absolute"
                 top="3"
@@ -39,7 +39,7 @@ const SingleTodo = ({ todo }) => {
                 {getDateInMonthDayYear(todo.insertedat)}
             </Text>
             <Divider my="4" />
-            <Text noOfLines={[1,2,3]} color="gray.800">
+            <Text noOfLines={[1, 2, 3]} color="gray.800">
                 {todo.description}
             </Text>
         </Box>
