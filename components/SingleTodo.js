@@ -1,6 +1,6 @@
-import { Box, Divider, Heading, Text, Tag } from "@chakra-ui/react";
+import { Box, Divider, Heading, Text, Tag, Center, Button } from "@chakra-ui/react";
 
-const SingleTodo = ({ todo, openHandler }) => {
+const SingleTodo = ({ todo, openHandler, deleteHandler, isDeleteLoading }) => {
     const getDateInMonthDayYear = (date) => {
         const d = new Date(date);
         const options = {
@@ -11,7 +11,6 @@ const SingleTodo = ({ todo, openHandler }) => {
             minute: "numeric"
         };
         const n = d.toLocaleDateString("en-US", options);
-        console.log("This is what the date is pre regex formatting");
         const replace = n.replace(new RegExp(",", "g"), " ");
         return replace;
     };
@@ -42,6 +41,18 @@ const SingleTodo = ({ todo, openHandler }) => {
             <Text noOfLines={[1, 2, 3]} color="gray.800">
                 {todo.description}
             </Text>
+            <Center>
+                <Button
+                    mt="4"
+                    size="sm"
+                    colorScheme="red"
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        deleteHandler(todo.id);
+                    }}
+                    isDisabled={isDeleteLoading}
+                >Delete</Button>
+            </Center>
         </Box>
     );
 };
